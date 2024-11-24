@@ -1,0 +1,11 @@
+/target/
+
+# Build artifacts for release, debug, and incremental compilation
+**/*.rs.bk
+**/*.dSYM/
+**/*.d
+**/*.rlib
+**/*.rmeta
+**/*.bc
+
+*/*.log
