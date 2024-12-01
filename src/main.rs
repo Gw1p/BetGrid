@@ -37,10 +37,8 @@ fn main() {
             .long("goals")
             .help("Goals for Over Under bets (for example, 1 or 1.5).")
         ).get_matches();
-    println!("Start");
     match bet_grid_handler::BetGrid::new().run(matches) {
         Err(e) => println!("{:?}", e),
         _ => ()
     }
-    println!("Done");
 }
