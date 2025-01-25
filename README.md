@@ -156,6 +156,12 @@ You can run `make build` to build the project.
 
 After building the project, the `bet_grid` binary will be located in the `target/<platform>/release/` directory.
 
+### Testing
+
+There are unit tests sprinkled throughout the modules.
+
+Run `cargo test` to run the test suite.
+
 # License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

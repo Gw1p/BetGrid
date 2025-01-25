@@ -1,7 +1,6 @@
 use serde::Serialize;
 
-
 #[derive(Serialize)]
 pub struct Error {
-    pub error: String
+    pub error: String,
 }

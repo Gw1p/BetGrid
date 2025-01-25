@@ -1,33 +1,40 @@
 use std::collections::HashMap;
 
-use anyhow::{Result, bail};
+use anyhow::{bail, Result};
+use colored::*;
 use serde::Serialize;
 use serde_json;
-use colored::*;
 
-use crate::bet_grid_handler::{OutputMode};
-
+use crate::bet_grid_handler::OutputMode;
 
 pub struct Grid {
     grid: Vec<Vec<f64>>,
-    grid_size: usize
+    grid_size: usize,
 }
 
 #[derive(Serialize)]
-struct JsonGrid {
+pub struct JsonGrid {
     grid_size: usize,
-    payoff_grid: HashMap<usize, HashMap<usize, f64>>
+    pub payoff_grid: HashMap<usize, HashMap<usize, f64>>,
 }
 
 impl Grid {
     pub fn new(grid_size: usize) -> Self {
         let size = grid_size.try_into().unwrap();
-        Self{ grid: vec![vec![0.0; size]; size], grid_size: size }
+        Self {
+            grid: vec![vec![0.0; size]; size],
+            grid_size: size,
+        }
     }
 
     pub fn set_payoff(&mut self, idx_x: usize, idx_y: usize, payoff: f64) -> Result<()> {
         if !self.is_in_bounds(idx_x, idx_y) {
-            bail!("Got invalid x or y coordinate: {} {}. It must be between 0 and {}.", idx_x, idx_y, self.grid_size);
+            bail!(
+                "Got invalid x or y coordinate: {} {}. It must be between 0 and {}.",
+                idx_x,
+                idx_y,
+                self.grid_size
+            );
         }
 
         self.grid[idx_x][idx_y] = payoff;
@@ -41,7 +48,9 @@ impl Grid {
     pub fn print(&self, output_mode: &OutputMode) -> Result<()> {
         match output_mode {
             OutputMode::Text => self.print_text()?,
-            OutputMode::Json => self.print_json()?,
+            OutputMode::Json => {
+                let _ = self.print_json()?;
+            }
         };
         Ok(())
     }
@@ -110,7 +119,7 @@ impl Grid {
     }
 
     fn get_column_lengths(&self) -> HashMap<usize, usize> {
-        // Each column length is the longest 
+        // Each column length is the longest
         let mut goal_to_col_len = HashMap::new();
         for away_goals in 0..self.grid_size {
             let mut largest_payoff = String::new();
@@ -132,7 +141,7 @@ impl Grid {
         }
     }
 
-    pub fn print_json(&self) -> Result<()> {
+    pub fn print_json(&self) -> Result<JsonGrid> {
         let mut map_grid: HashMap<usize, HashMap<usize, f64>> = HashMap::new();
 
         for home_goals in 0..self.grid_size {
@@ -145,10 +154,10 @@ impl Grid {
 
         let json_grid = JsonGrid {
             grid_size: self.grid_size,
-            payoff_grid: map_grid
+            payoff_grid: map_grid,
         };
         let json_output = serde_json::to_string_pretty(&json_grid)?;
         println!("{}", json_output);
-        Ok(())
+        Ok(json_grid)
     }
 }

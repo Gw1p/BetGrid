@@ -1,10 +1,10 @@
 use clap::{Arg, Command};
 mod bet_grid_handler;
 mod bet_types;
-mod grid;
-mod market_specifiers;
 mod config;
 mod error;
+mod grid;
+mod market_specifiers;
 
 fn main() {
     let matches = Command::new("Football Betting Payoff Grid")
@@ -39,6 +39,6 @@ fn main() {
         ).get_matches();
     match bet_grid_handler::BetGrid::new().run(matches) {
         Err(e) => println!("{:?}", e),
-        _ => ()
+        _ => (),
     }
 }
